@@ -31,12 +31,17 @@ local $ENV{AUTOMATED_TESTING};
   );
   ok( $tzil, "created test dist");
 
-  capture { $tzil->test };
-
-  ok(
-    grep({ /all's well/i } @{ $tzil->log_messages }),
-    "xt tests aren't run without explicitly asking for them",
-  );
+  try {
+    capture { $tzil->test };
+    is_deeply(
+      scalar grep({ /all's well/i } @{ $tzil->log_messages }),
+      1,
+      "xt tests aren't run without explicitly asking for them",
+    );
+  }
+  catch {
+    fail "dzil test success";
+  }
 }
 
 {
